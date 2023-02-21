@@ -8,14 +8,24 @@
         <version>2.7.8</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.yan</groupId>
     <artifactId>yan-rpc-framework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>yan-rpc-framework</name>
     <description>yan-rpc-framework</description>
+    <packaging>pom</packaging>
+
     <properties>
         <java.version>1.8</java.version>
+        <spring.version>2.7.8</spring.version>
     </properties>
+
+    <modules>
+        <module>rpc-framework-study</module>
+        <module>rpc-framework-common</module>
+    </modules>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,6 +55,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>
