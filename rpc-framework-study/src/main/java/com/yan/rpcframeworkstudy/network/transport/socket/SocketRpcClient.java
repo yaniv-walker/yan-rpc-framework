@@ -21,7 +21,7 @@ import java.net.Socket;
 @Slf4j
 public class SocketRpcClient implements IRpcRequestTransport {
 
-    private static final String SERVER_IP_ADDRESS = "127.0.0.1";
+    private static final String SERVER_IP_ADDRESS = "10.122.3.56";
     private static final Integer SERVER_PORT = 9998;
 
     /**
@@ -36,10 +36,10 @@ public class SocketRpcClient implements IRpcRequestTransport {
         final InetSocketAddress socketAddress = new InetSocketAddress(SERVER_IP_ADDRESS, SERVER_PORT);
 
         // 2. Connect with the socket of the server using info 1.
-        try(final Socket socket = new Socket();
-            final ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-            final ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
+        try(final Socket socket = new Socket()) {
             socket.connect(socketAddress);
+            final ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+            final ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
 
             // 3. Send data to the server through the output stream.
             output.writeObject(rpcRequest);

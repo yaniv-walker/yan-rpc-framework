@@ -24,6 +24,8 @@
     <modules>
         <module>rpc-framework-study</module>
         <module>rpc-framework-common</module>
+        <module>example-client</module>
+        <module>example-server</module>
     </modules>
 
     <dependencies>
