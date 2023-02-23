@@ -1,11 +1,13 @@
-package com.yan.rpcframeworkstudy.network.transport.netty;
+package com.yan.rpcframeworkstudy.network.transport.netty.client;
 
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -30,7 +32,14 @@ public class NettyRpcClient implements IRpcRequestTransport {
         this.bootstrap.group(this.eventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .handler(new ChannelInitializer<SocketChannel>() {
+
+                    @Override
+                    protected void initChannel(final SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new NettyRpcClientHandler());
+                    }
+                });
     }
 
     /**

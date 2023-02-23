@@ -1,7 +1,8 @@
-package com.yan.rpcframeworkstudy.network.transport.netty;
+package com.yan.rpcframeworkstudy.network.transport.netty.client;
 
 import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +17,7 @@ public class UnprocessedRequests {
     /**
      * Unprocessed response futures by the server.
      */
-    private static final ConcurrentHashMap<String, CompletableFuture<RpcResponse<Object>>>
+    private static final Map<String, CompletableFuture<RpcResponse<Object>>>
             UNPROCESSED_RESPONSE_FUTURES_MAP = new ConcurrentHashMap<>();
 
     /**

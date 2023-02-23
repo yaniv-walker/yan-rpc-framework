@@ -1,4 +1,4 @@
-package com.yan.rpcframeworkstudy.network.transport.netty;
+package com.yan.rpcframeworkstudy.network.transport.netty.server;
 
 import com.yan.rpcframeworkstudy.network.transport.IRpcServer;
 
