@@ -21,14 +21,24 @@ import java.io.Serializable;
 public class RpcMessage implements Serializable {
 
     /**
+     * message type such as 'ping', 'method result', etc.
+     */
+    private byte messageType;
+
+    /**
      * serialization type.
      */
     private byte codec;
 
     /**
+     * compress type.
+     */
+    private byte compress;
+
+    /**
      * request ID.
      */
-    private byte[] requestId;
+    private int requestId;
 
     /**
      * message body.

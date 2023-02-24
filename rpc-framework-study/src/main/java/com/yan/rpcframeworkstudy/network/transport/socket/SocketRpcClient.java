@@ -10,6 +10,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_IP_ADDRESS;
+import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_PORT;
+
 /**
  * Socket implement of the rpc client.
  *
@@ -20,9 +23,6 @@ import java.net.Socket;
  */
 @Slf4j
 public class SocketRpcClient implements IRpcRequestTransport {
-
-    private static final String SERVER_IP_ADDRESS = "10.122.3.56";
-    private static final Integer SERVER_PORT = 9998;
 
     /**
      * send request data to server.
