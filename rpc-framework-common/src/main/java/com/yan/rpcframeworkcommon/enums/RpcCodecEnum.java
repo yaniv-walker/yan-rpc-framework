@@ -14,9 +14,18 @@ import lombok.Getter;
 @Getter
 public enum RpcCodecEnum {
 
-    JAVA_BASIC((byte) 0, "basic");
+    JAVA_BASIC((byte) 0, "java");
 
-    private byte code;
+    private final byte code;
 
-    private String name;
+    private final String name;
+
+    public static RpcCodecEnum getEnumByCode(final byte code) {
+        for (RpcCodecEnum e : RpcCodecEnum.values()) {
+            if (e.getCode() == code) {
+                return e;
+            }
+        }
+        return null;
+    }
 }

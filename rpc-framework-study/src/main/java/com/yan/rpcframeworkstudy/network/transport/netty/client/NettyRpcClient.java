@@ -109,11 +109,14 @@ public class NettyRpcClient implements IRpcRequestTransport {
                         }
                     }
                 });
-
+            } else {
+                throw new IllegalStateException("client send request failed");
             }
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (log.isErrorEnabled()) {
+                log.error("client send request failed", e);
+            }
         }
 
         return resultFuture;

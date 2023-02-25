@@ -3,6 +3,9 @@ package com.yan.rpcframeworkstudy.network.transport.netty.codec;
 import com.yan.rpcframeworkcommon.enums.RpcMessageTypeEnum;
 import com.yan.rpcframeworkstudy.network.contants.RpcConstants;
 import com.yan.rpcframeworkstudy.network.dto.RpcMessage;
+import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
+import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
+import com.yan.rpcframeworkstudy.serializing.context.SerializerContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -91,28 +94,35 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         final byte compress = in.readByte();
         final int requestId = in.readInt();
 
-        if (in.readableBytes() < (fullLength - RpcConstants.HEADER_LENGTH)) {
+        final int dataLength = fullLength - RpcConstants.HEADER_LENGTH;
+        if (in.readableBytes() < dataLength) {
             throw new IllegalArgumentException("Message data is incorrect");
         }
 
-        // TODO: serialize data
-        Object data = null;
+        // deserialize data
+        byte[] data = new byte[dataLength];
+        in.readBytes(data);
+
+        Object dataInstance = null;
+        final SerializerContext serializerContext = new SerializerContext();
         if (RpcMessageTypeEnum.REQUEST.getCode() == messageType) {
             // request message
             if (log.isInfoEnabled()) {
                 log.info("decode request message");
             }
 
-
+            dataInstance = serializerContext.deserialize(codec, data, RpcRequest.class);
         } else if (RpcMessageTypeEnum.RESPONSE.getCode() == messageType) {
             // response message
             if (log.isInfoEnabled()) {
                 log.info("decode response message");
             }
+
+            dataInstance = serializerContext.deserialize(codec, data, RpcResponse.class);
         }
 
         return RpcMessage.builder().messageType(messageType).codec(codec)
-                .compress(compress).requestId(requestId).data(data).build();
+                .compress(compress).requestId(requestId).data(dataInstance).build();
     }
 
     private void checkVersion(ByteBuf in) {

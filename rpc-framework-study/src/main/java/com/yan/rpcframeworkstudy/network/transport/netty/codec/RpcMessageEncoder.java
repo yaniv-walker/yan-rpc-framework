@@ -1,8 +1,10 @@
 package com.yan.rpcframeworkstudy.network.transport.netty.codec;
 
 import com.yan.rpcframeworkcommon.enums.RpcCodecEnum;
+import com.yan.rpcframeworkcommon.enums.RpcMessageTypeEnum;
 import com.yan.rpcframeworkstudy.network.contants.RpcConstants;
 import com.yan.rpcframeworkstudy.network.dto.RpcMessage;
+import com.yan.rpcframeworkstudy.serializing.context.SerializerContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -66,13 +68,17 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
             out.writeByte(msg.getCompress());
             out.writeInt(msg.getRequestId());
 
-            // 4. TODO: serialize the data of message with the codecType.
-//        if (RpcCodecEnum.JAVA_BASIC.getCode() == msg.getCodec()) {
-//
-//        }
-
+            // 4. serialize the data of message with the codecType.
             // 5. compute the full length of above contents.
+            final SerializerContext serializerContext = new SerializerContext();
             int fullLength = RpcConstants.HEADER_LENGTH;
+            if (RpcMessageTypeEnum.REQUEST.getCode() == msg.getMessageType()
+                || RpcMessageTypeEnum.RESPONSE.getCode() == msg.getMessageType()) {
+                final byte[] data = serializerContext.serialize(msg.getCodec(), msg.getData());
+                fullLength += data.length;
+                out.writeBytes(data);
+            }
+
             final int tailIndex = out.writerIndex();
             out.writerIndex(fullLengthIndex);
             out.writeInt(fullLength);
