@@ -77,6 +77,9 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
      * @return RpcMessage data
      */
     private Object decodeFrame(final ByteBuf in) {
+        if (log.isInfoEnabled()) {
+            log.info("start to decode the frame");
+        }
 
         // |   magic   code        |version |    full length    | messageType| codec | compress |    RequestId      |
         checkMagicCode(in);
@@ -99,6 +102,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
             if (log.isInfoEnabled()) {
                 log.info("decode request message");
             }
+
 
         } else if (RpcMessageTypeEnum.RESPONSE.getCode() == messageType) {
             // response message

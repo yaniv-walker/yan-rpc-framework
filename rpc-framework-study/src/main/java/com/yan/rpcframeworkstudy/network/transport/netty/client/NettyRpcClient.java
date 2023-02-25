@@ -39,17 +39,15 @@ public class NettyRpcClient implements IRpcRequestTransport {
      */
     private final AtomicInteger atomicInteger = new AtomicInteger(0);
 
-    private final EventLoopGroup eventLoopGroup;
-
     private final Bootstrap bootstrap;
 
     private final UnprocessedRequests unprocessedRequests;
 
     public NettyRpcClient() {
         // initialize resources such as eventLoopGroup, bootStrap, etc.
-        this.eventLoopGroup = new NioEventLoopGroup();
+        final EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         this.bootstrap = new Bootstrap();
-        this.bootstrap.group(this.eventLoopGroup)
+        this.bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -89,12 +87,12 @@ public class NettyRpcClient implements IRpcRequestTransport {
                 // 5. if the channel is active,
                 // then put the future into the unprocessedRequests and send the request to the server.
 
-                final int requestId = this.atomicInteger.getAndIncrement();
-                this.unprocessedRequests.put(String.valueOf(requestId), resultFuture);
+//                final int requestId = this.atomicInteger.getAndIncrement();
+                this.unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
 
                 final RpcMessage rpcMessage = RpcMessage.builder().messageType(RpcMessageTypeEnum.REQUEST.getCode())
                         .codec(RpcCodecEnum.JAVA_BASIC.getCode())
-                        .requestId(requestId)
+                        .requestId(Integer.parseInt(rpcRequest.getRequestId()))
                         .data(rpcRequest)
                         .build();
                 channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {

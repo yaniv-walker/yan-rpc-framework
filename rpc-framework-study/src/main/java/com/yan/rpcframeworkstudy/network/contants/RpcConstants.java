@@ -27,8 +27,8 @@ public final class RpcConstants {
     public static final byte MESSAGE_TYPE_REQUEST = 1;
     public static final byte MESSAGE_TYPE_RESPONSE = 2;
 
-    public static final int HEADER_LENGTH = 16;
+    public static final int HEADER_LENGTH = 7;
 
-    public static final String SERVER_IP_ADDRESS = "10.122.3.56";
+    public static final String SERVER_IP_ADDRESS = "2.0.1.58";
     public static final Integer SERVER_PORT = 9998;
 }

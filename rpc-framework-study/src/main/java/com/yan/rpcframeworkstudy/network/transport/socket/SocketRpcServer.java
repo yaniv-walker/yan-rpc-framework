@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.util.concurrent.*;
 
 /**
- * Socket implement of the rpc server.
+ * Socket implementation for the rpc server.
  *
  * @author yanjiaqi
  * @version 1.0.0

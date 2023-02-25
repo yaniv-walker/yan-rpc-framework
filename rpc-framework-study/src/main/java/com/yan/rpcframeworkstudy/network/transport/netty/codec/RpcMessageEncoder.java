@@ -46,7 +46,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
     @Override
     protected void encode(ChannelHandlerContext ctx, RpcMessage msg, ByteBuf out) {
         if (log.isInfoEnabled()) {
-            log.info("start to encode the message");
+            log.info("start to encode the message: [{}]", msg);
         }
 
         try {
