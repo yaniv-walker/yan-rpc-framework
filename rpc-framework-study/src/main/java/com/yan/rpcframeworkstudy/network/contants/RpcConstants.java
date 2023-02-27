@@ -29,6 +29,6 @@ public final class RpcConstants {
 
     public static final int HEADER_LENGTH = 7;
 
-    public static final String SERVER_IP_ADDRESS = "2.0.1.58";
+    public static final String SERVER_IP_ADDRESS = "169.254.101.124";
     public static final Integer SERVER_PORT = 9998;
 }

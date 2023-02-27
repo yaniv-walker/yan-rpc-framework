@@ -4,6 +4,7 @@ import com.yan.rpcframeworkcommon.enums.RpcCodecEnum;
 import com.yan.rpcframeworkcommon.exception.SerializeException;
 import com.yan.rpcframeworkstudy.serializing.ISerializer;
 import com.yan.rpcframeworkstudy.serializing.java.JavaSerializer;
+import com.yan.rpcframeworkstudy.serializing.kryo.KryoSerializer;
 
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -29,7 +30,9 @@ public class SerializerContext {
 //            SERIALIZER_STRATEGY_MAP.put(serializer.getCodecEnum(), serializer);
 //        });
         final ISerializer javaSerializer = new JavaSerializer();
+        final ISerializer kryoSerializer = new KryoSerializer();
         SERIALIZER_STRATEGY_MAP.put(javaSerializer.getCodecEnum(), javaSerializer);
+        SERIALIZER_STRATEGY_MAP.put(kryoSerializer.getCodecEnum(), kryoSerializer);
     }
 
     /**

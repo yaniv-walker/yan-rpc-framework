@@ -92,7 +92,8 @@ public class NettyRpcClient implements IRpcRequestTransport {
                 this.unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
 
                 final RpcMessage rpcMessage = RpcMessage.builder().messageType(RpcMessageTypeEnum.REQUEST.getCode())
-                        .codec(RpcCodecEnum.JAVA_BASIC.getCode())
+//                        .codec(RpcCodecEnum.JAVA_BASIC.getCode())
+                        .codec(RpcCodecEnum.KRYO.getCode())
                         .requestId(Integer.parseInt(rpcRequest.getRequestId()))
                         .data(rpcRequest)
                         .build();

@@ -14,7 +14,9 @@ import lombok.Getter;
 @Getter
 public enum RpcCodecEnum {
 
-    JAVA_BASIC((byte) 0, "java");
+    JAVA_BASIC((byte) 0, "java"),
+
+    KRYO((byte) 1, "kryo");
 
     private final byte code;
 
