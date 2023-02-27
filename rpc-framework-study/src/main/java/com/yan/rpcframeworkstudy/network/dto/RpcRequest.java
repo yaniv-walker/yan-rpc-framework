@@ -53,4 +53,12 @@ public class RpcRequest implements Serializable {
      * To identify different version of project.
      */
     private String version;
+
+    /**
+     * get the name of rpc service.
+     * @return the name of rpc service
+     */
+    public String getRpcServiceName() {
+        return this.getInterfaceName() + this.getGroup() + this.getVersion();
+    }
 }

@@ -79,6 +79,7 @@ public class NettyRpcClient implements IRpcRequestTransport {
 
         // 4. get server address and build a channel between the client and the server.
         try {
+            // TODO: discover the server ip and port
             final SocketAddress inetSocketAddress =
                     new InetSocketAddress(RpcConstants.SERVER_IP_ADDRESS, RpcConstants.SERVER_PORT);
             final Channel channel = this.bootstrap.connect(inetSocketAddress).sync().channel();
