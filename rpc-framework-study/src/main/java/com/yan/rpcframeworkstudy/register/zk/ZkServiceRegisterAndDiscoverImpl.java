@@ -2,6 +2,8 @@ package com.yan.rpcframeworkstudy.register.zk;
 
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.register.IServiceRegisterAndDiscover;
+import com.yan.rpcframeworkstudy.register.zk.util.CuratorUtil;
+import org.apache.curator.framework.CuratorFramework;
 
 import java.net.InetSocketAddress;
 
@@ -21,7 +23,7 @@ public class ZkServiceRegisterAndDiscoverImpl implements IServiceRegisterAndDisc
      */
     @Override
     public void register(final String rpcServiceName, final InetSocketAddress inetSocketAddress) {
-
+        final CuratorFramework zkServer = CuratorUtil.getZkServer();
     }
 
     /**
