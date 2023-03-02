@@ -7,6 +7,8 @@ import org.apache.curator.framework.CuratorFramework;
 
 import java.net.InetSocketAddress;
 
+import static com.yan.rpcframeworkstudy.register.zk.util.CuratorUtil.ZK_REGISTER_ROOT_PATH;
+
 /**
  * zookeeper implementation.
  *
@@ -23,7 +25,9 @@ public class ZkServiceRegisterAndDiscoverImpl implements IServiceRegisterAndDisc
      */
     @Override
     public void register(final String rpcServiceName, final InetSocketAddress inetSocketAddress) {
-        final CuratorFramework zkServer = CuratorUtil.getZkServer();
+        final String path = String.format("%s/%s%s", ZK_REGISTER_ROOT_PATH, rpcServiceName, inetSocketAddress.toString());
+        final CuratorFramework zkClient = CuratorUtil.getZkClient();
+        CuratorUtil.createPersistentNode(zkClient, path);
     }
 
     /**
