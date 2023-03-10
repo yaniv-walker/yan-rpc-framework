@@ -164,10 +164,12 @@ public final class CuratorUtil {
      * @param inetSocketAddress server address
      */
     public static void clearRegistry(final CuratorFramework zkClient, final InetSocketAddress inetSocketAddress) {
+        final Set<String> toBeRemoved;
         REGISTERED_PATH_SET.stream().parallel().forEach(path -> {
             try {
                 if (path.endsWith(inetSocketAddress.toString())) {
                     zkClient.delete().forPath(path);
+
                 }
             } catch (Exception e) {
                 if (log.isErrorEnabled()) {
