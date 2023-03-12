@@ -1,8 +1,12 @@
 package com.yan.rpcframeworkstudy.network.transport.netty.server;
 
+import com.yan.rpcframeworkcommon.factory.SingletonFactory;
+import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
 import com.yan.rpcframeworkstudy.network.transport.IRpcServer;
 import com.yan.rpcframeworkstudy.network.transport.netty.codec.RpcMessageDecoder;
 import com.yan.rpcframeworkstudy.network.transport.netty.codec.RpcMessageEncoder;
+import com.yan.rpcframeworkstudy.provider.IServiceProvider;
+import com.yan.rpcframeworkstudy.provider.zk.ZkServiceProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -33,6 +37,12 @@ import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_POR
  * @since JDK 1.8.0
  */
 public class NettyRpcServer implements IRpcServer {
+
+    public NettyRpcServer(final RpcServiceConfig rpcServiceConfig) {
+        // TODO: when server start, register all service we need (could use SPI)
+        final IServiceProvider serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
+        serviceProvider.publishService(rpcServiceConfig);
+    }
 
     /**
      * start RPC server.

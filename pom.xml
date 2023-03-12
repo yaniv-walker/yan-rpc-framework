@@ -29,6 +29,7 @@
         <module>rpc-framework-common</module>
         <module>example-client</module>
         <module>example-server</module>
+        <module>example-api</module>
     </modules>
 
     <dependencies>

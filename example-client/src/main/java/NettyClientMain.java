@@ -1,3 +1,4 @@
+import com.yan.hello.Hello;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
@@ -26,8 +27,19 @@ public class NettyClientMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final IRpcRequestTransport rpcRequestTransport = new NettyRpcClient();
         for (int i = 0; i < 100; i++) {
+            final Hello hello = Hello.builder()
+                    .message("hello " + i)
+                    .description("this is " + i + "th talk")
+                    .build();
             final RpcRequest request = RpcRequest.builder()
-                    .requestId(String.valueOf(atomicInteger.getAndIncrement())).build();
+                    .requestId(String.valueOf(atomicInteger.getAndIncrement()))
+                    .interfaceName("com.yan.hello.IHello")
+                    .methodName("hello")
+                    .paramTypes(new Class[]{ Hello.class })
+                    .parameters(new Object[]{ hello })
+                    .group("test1")
+                    .version("version1")
+                    .build();
             final Object obj = rpcRequestTransport.sendRequest(request);
             if (obj instanceof CompletableFuture) {
                 final CompletableFuture<RpcResponse<Object>> future = (CompletableFuture<RpcResponse<Object>>) obj;

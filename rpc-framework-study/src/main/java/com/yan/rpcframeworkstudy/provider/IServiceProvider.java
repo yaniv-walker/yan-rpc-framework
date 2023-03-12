@@ -17,4 +17,11 @@ public interface IServiceProvider {
      */
     void publishService(RpcServiceConfig rpcServiceConfig);
 
+    /**
+     * get service by name of rpc service.
+     * @param rpcServiceName name of rpc service
+     * @return the service of the rpcServiceName
+     */
+    Object getService(String rpcServiceName);
+
 }

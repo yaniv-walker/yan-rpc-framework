@@ -31,7 +31,7 @@ public class RpcServiceConfig {
     private String version;
 
     public String getServiceName() {
-        return service.getClass().getInterfaces()[0].getCanonicalName();
+        return this.service.getClass().getInterfaces()[0].getCanonicalName();
     }
 
     public String getRpcServiceName() {
