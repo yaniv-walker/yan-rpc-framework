@@ -23,6 +23,7 @@ import lombok.SneakyThrows;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,10 +39,12 @@ import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_POR
  */
 public class NettyRpcServer implements IRpcServer {
 
-    public NettyRpcServer(final RpcServiceConfig rpcServiceConfig) {
+    public NettyRpcServer(final List<RpcServiceConfig> rpcServiceConfigs) {
         // TODO: when server start, register all service we need (could use SPI)
         final IServiceProvider serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
-        serviceProvider.publishService(rpcServiceConfig);
+        for (final RpcServiceConfig rpcServiceConfig : rpcServiceConfigs) {
+            serviceProvider.publishService(rpcServiceConfig);
+        }
     }
 
     /**

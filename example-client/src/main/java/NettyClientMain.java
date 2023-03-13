@@ -1,4 +1,5 @@
 import com.yan.hello.Hello;
+import com.yan.hello.IHelloService;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
@@ -33,7 +34,7 @@ public class NettyClientMain {
                     .build();
             final RpcRequest request = RpcRequest.builder()
                     .requestId(String.valueOf(atomicInteger.getAndIncrement()))
-                    .interfaceName("com.yan.hello.IHello")
+                    .interfaceName(IHelloService.class.getCanonicalName())
                     .methodName("hello")
                     .paramTypes(new Class[]{ Hello.class })
                     .parameters(new Object[]{ hello })
