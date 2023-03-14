@@ -1,17 +1,18 @@
 package com.yan.rpcframeworkstudy.register.zk;
 
+import com.yan.rpcframeworkcommon.extension.ExtensionLoader;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.register.IServiceRegisterAndDiscover;
-import com.yan.rpcframeworkstudy.register.zk.util.CuratorUtil;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ZkServiceRegisterAndDiscoverImplTest {
 
-    final IServiceRegisterAndDiscover registerAndDiscover = new ZkServiceRegisterAndDiscoverImpl();
+    final IServiceRegisterAndDiscover registerAndDiscover =
+            ExtensionLoader.getExtensionLoader(IServiceRegisterAndDiscover.class).getExtension("zk");
     final RpcRequest rpcRequest = RpcRequest.builder().interfaceName("").group("0").version("1").build();
 
     @Test

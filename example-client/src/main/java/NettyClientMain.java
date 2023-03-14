@@ -27,18 +27,24 @@ public class NettyClientMain {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final IRpcRequestTransport rpcRequestTransport = new NettyRpcClient();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             final Hello hello = Hello.builder()
                     .message("hello " + i)
                     .description("this is " + i + "th talk")
                     .build();
+
+            // randomly select different implementation
+            int num = 1;
+            if (i % 2 == 0) {
+                num = 2;
+            }
             final RpcRequest request = RpcRequest.builder()
                     .requestId(String.valueOf(atomicInteger.getAndIncrement()))
                     .interfaceName(IHelloService.class.getCanonicalName())
                     .methodName("hello")
                     .paramTypes(new Class[]{ Hello.class })
                     .parameters(new Object[]{ hello })
-                    .group("test1")
+                    .group("test" + num)
                     .version("version1")
                     .build();
             final Object obj = rpcRequestTransport.sendRequest(request);

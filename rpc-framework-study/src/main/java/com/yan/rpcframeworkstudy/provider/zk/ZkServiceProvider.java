@@ -1,6 +1,7 @@
 package com.yan.rpcframeworkstudy.provider.zk;
 
 import com.yan.rpcframeworkcommon.exception.RpcException;
+import com.yan.rpcframeworkcommon.extension.ExtensionLoader;
 import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
 import com.yan.rpcframeworkstudy.provider.IServiceProvider;
 import com.yan.rpcframeworkstudy.register.IServiceRegisterAndDiscover;
@@ -35,7 +36,10 @@ public class ZkServiceProvider implements IServiceProvider {
 
     public ZkServiceProvider() {
         registeredServiceMap = new ConcurrentHashMap<>();
-        serviceRegisterAndDiscover = new ZkServiceRegisterAndDiscoverImpl();
+//        serviceRegisterAndDiscover = new ZkServiceRegisterAndDiscoverImpl();
+        serviceRegisterAndDiscover = ExtensionLoader
+                .getExtensionLoader(IServiceRegisterAndDiscover.class)
+                .getExtension("zk");
     }
 
     /**

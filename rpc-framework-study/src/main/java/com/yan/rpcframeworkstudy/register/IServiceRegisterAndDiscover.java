@@ -1,5 +1,6 @@
 package com.yan.rpcframeworkstudy.register;
 
+import com.yan.rpcframeworkcommon.extension.SPI;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 
 import java.net.InetSocketAddress;
@@ -11,6 +12,7 @@ import java.net.InetSocketAddress;
  * @version 1.0.0 2023-02-27
  * @since JDK 1.8.0
  */
+@SPI
 public interface IServiceRegisterAndDiscover {
 
     /**

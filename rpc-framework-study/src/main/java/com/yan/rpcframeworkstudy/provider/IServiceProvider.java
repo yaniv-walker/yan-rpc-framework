@@ -1,5 +1,6 @@
 package com.yan.rpcframeworkstudy.provider;
 
+import com.yan.rpcframeworkcommon.extension.SPI;
 import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
 
 /**
@@ -9,6 +10,7 @@ import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
  * @version 1.0.0 2023-03-10
  * @since JDK 1.8.0
  */
+@SPI
 public interface IServiceProvider {
 
     /**

@@ -1,5 +1,6 @@
 package com.yan.rpcframeworkstudy.network.transport.netty.server;
 
+import com.yan.rpcframeworkcommon.extension.ExtensionLoader;
 import com.yan.rpcframeworkcommon.factory.SingletonFactory;
 import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
 import com.yan.rpcframeworkstudy.network.transport.IRpcServer;
@@ -40,8 +41,10 @@ import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_POR
 public class NettyRpcServer implements IRpcServer {
 
     public NettyRpcServer(final List<RpcServiceConfig> rpcServiceConfigs) {
-        // TODO: when server start, register all service we need (could use SPI)
-        final IServiceProvider serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
+        // TODO: when server start, register all service we need (could use Spring to scan)
+//        final IServiceProvider serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
+        final IServiceProvider serviceProvider =
+                ExtensionLoader.getExtensionLoader(IServiceProvider.class).getExtension("zk");
         for (final RpcServiceConfig rpcServiceConfig : rpcServiceConfigs) {
             serviceProvider.publishService(rpcServiceConfig);
         }

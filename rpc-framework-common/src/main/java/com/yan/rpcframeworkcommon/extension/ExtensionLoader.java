@@ -3,6 +3,13 @@ package com.yan.rpcframeworkcommon.extension;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,7 +52,7 @@ public class ExtensionLoader<T> {
      * key: extension implementation name that is definition in setting file.
      * value: extension instance.
      */
-    private final Map<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<>();
+    private final Map<String, Holder<T>> cachedInstances = new ConcurrentHashMap<>();
 
     /**
      * key: extension implementation name that is definition in setting file.
@@ -101,24 +108,24 @@ public class ExtensionLoader<T> {
         }
 
         // first, get from cache, if not hit, create one
-        Holder<Object> holder = cachedInstances.get(name);
+        Holder<T> holder = cachedInstances.get(name);
         if (null == holder) {
             cachedInstances.putIfAbsent(name, new Holder<>());
             holder = cachedInstances.get(name);
         }
 
-        Object instance = holder.get();
+        T instance = holder.get();
         // create a singleton extension if no instance exists
         if (null == instance) {
-            synchronized(holder) {
-                instance = holder;
+            synchronized(cachedInstances) {
+                instance = holder.get();
                 if (null == instance) {
                     instance = createExtension(name);
                     holder.set(instance);
                 }
             }
         }
-        return (T) instance;
+        return instance;
     }
 
     /**
@@ -127,16 +134,114 @@ public class ExtensionLoader<T> {
      * @param name extension implementation name that is definition in setting file.
      * @return created extension instance
      */
-    private Object createExtension(final String name) {
+    private T createExtension(final String name) {
+        final Class<?> extensionClass = getExtensionClasses().get(name);
+        if (null == extensionClass) {
+            throw new IllegalArgumentException("Extension with the name [" + name + "] does not exist");
+        }
 
-        return null;
+        T instance = (T) EXTENSION_INSTANCES.get(extensionClass);
+        try {
+            if (null == instance) {
+                EXTENSION_INSTANCES.putIfAbsent(extensionClass, extensionClass.newInstance());
+                instance = (T) EXTENSION_INSTANCES.get(extensionClass);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("Extension with name [" + name + "] created failed", e);
+        }
+
+        return instance;
     }
 
     /**
      * get extension classes by type.
      * @return all extension classes that is implementation of the interface "type"
      */
-//    private Map<String, Class<?>> getExtensionClasses() {
-//
-//    }
+    private Map<String, Class<?>> getExtensionClasses() {
+        // first, get from cache, if not hit, create one
+        Map<String, Class<?>> name2Classes = cachedClasses.get();
+
+        // double check
+        if (null == name2Classes) {
+            synchronized (cachedClasses) {
+                name2Classes = cachedClasses.get();
+                if (null == name2Classes) {
+                    name2Classes = new HashMap<>();
+                    // load all extensions from our extension directory
+                    loadDirectory(name2Classes);
+                    cachedClasses.set(name2Classes);
+                }
+            }
+        }
+
+        return name2Classes;
+    }
+
+    /**
+     * load all extensions of the interface of "type".
+     * @param name2Classes loaded extensions
+     */
+    private void loadDirectory(final Map<String, Class<?>> name2Classes) {
+        // get class loader of "type"
+        final String path = ExtensionLoader.EXTENSION_DIRECTORY + this.type.getName();
+        final ClassLoader classLoader = ExtensionLoader.class.getClassLoader();
+
+        // get all resources url with name of interface "type"
+        try {
+            final Enumeration<URL> urls = classLoader.getResources(path);
+            while (urls.hasMoreElements()) {
+                // load resource by url
+                final URL url = urls.nextElement();
+                loadResource(name2Classes, classLoader, url);
+            }
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Get resources of extension with the path [" + path + "] failed", e);
+        }
+    }
+
+    /**
+     * load resource by url。
+     * @param name2Classes loaded extensions
+     * @param classLoader load resource by it
+     * @param url resource location
+     */
+    private void loadResource(final Map<String, Class<?>> name2Classes, final ClassLoader classLoader, final URL url) {
+        try(final BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+            // read every line
+            String line;
+            while (null != (line = reader.readLine())) {
+                // find comment and skip
+                final int commentIndex = line.indexOf("#");
+                if (commentIndex >= 0) {
+                    line = line.substring(0, commentIndex).trim();
+                }
+
+                if (line.length() > 0) {
+                    // split name and class from the line
+                    final int equalIndex = line.indexOf("=");
+                    if (equalIndex < 0) {
+                        if (log.isErrorEnabled()) {
+                            log.error("the resource file with the name [{}] has a line which have not equal sign(=)",
+                                    url.getPath());
+                        }
+                        throw new IllegalStateException("the resource file with the name " + url.getPath()
+                                + " has a line which have not equal sign(=)");
+                    }
+                    final String name = line.substring(0, equalIndex).trim();
+                    final String clazzName = line.substring(equalIndex + 1).trim();
+
+                    // our SPI use key-value pair so both of them must not be empty
+                    if (name.length() > 0 && clazzName.length() > 0) {
+                        final Class<?> clazz = classLoader.loadClass(clazzName);
+                        name2Classes.put(name, clazz);
+                    }
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException("Load resource of extension with the url [" + url + "] failed", e);
+        }
+    }
 }
