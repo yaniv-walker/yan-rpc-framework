@@ -1,9 +1,11 @@
 import com.yan.hello.Hello;
 import com.yan.hello.IHelloService;
+import com.yan.rpcframeworkstudy.config.RpcServiceConfig;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
 import com.yan.rpcframeworkstudy.network.transport.netty.client.NettyRpcClient;
+import com.yan.rpcframeworkstudy.proxy.RpcClientProxy;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +25,7 @@ public class NettyClientMain {
     /**
      * request id.
      */
-    private static final AtomicInteger atomicInteger = new AtomicInteger(0);
+//    private static final AtomicInteger atomicInteger = new AtomicInteger(0);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final IRpcRequestTransport rpcRequestTransport = new NettyRpcClient();
@@ -38,23 +40,28 @@ public class NettyClientMain {
             if (i % 2 == 0) {
                 num = 2;
             }
-            final RpcRequest request = RpcRequest.builder()
-                    .requestId(String.valueOf(atomicInteger.getAndIncrement()))
-                    .interfaceName(IHelloService.class.getCanonicalName())
-                    .methodName("hello")
-                    .paramTypes(new Class[]{ Hello.class })
-                    .parameters(new Object[]{ hello })
-                    .group("test" + num)
-                    .version("version1")
-                    .build();
-            final Object obj = rpcRequestTransport.sendRequest(request);
-            if (obj instanceof CompletableFuture) {
-                final CompletableFuture<RpcResponse<Object>> future = (CompletableFuture<RpcResponse<Object>>) obj;
-                final RpcResponse<Object> rpcResponse = future.get();
-                if (log.isInfoEnabled()) {
-                    log.info("business received rpcResponse is [{}]", rpcResponse);
-                }
-            }
+//            final RpcRequest request = RpcRequest.builder()
+//                    .requestId(String.valueOf(atomicInteger.getAndIncrement()))
+//                    .interfaceName(IHelloService.class.getCanonicalName())
+//                    .methodName("hello")
+//                    .paramTypes(new Class[]{ Hello.class })
+//                    .parameters(new Object[]{ hello })
+//                    .group("test" + num)
+//                    .version("version1")
+//                    .build();
+//            final Object obj = rpcRequestTransport.sendRequest(request);
+//            if (obj instanceof CompletableFuture) {
+//                final CompletableFuture<RpcResponse<Object>> future = (CompletableFuture<RpcResponse<Object>>) obj;
+//                final RpcResponse<Object> rpcResponse = future.get();
+//                if (log.isInfoEnabled()) {
+//                    log.info("business received rpcResponse is [{}]", rpcResponse);
+//                }
+//            }
+            final IHelloService helloServiceProxy = new RpcClientProxy(rpcRequestTransport,
+                    RpcServiceConfig.builder().group("test" + num).version("version1").build())
+                    .getProxy(IHelloService.class);
+            final String helloResult = helloServiceProxy.hello(hello);
+            log.info("hello result: " + helloResult);
         }
     }
 }
