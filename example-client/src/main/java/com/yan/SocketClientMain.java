@@ -1,3 +1,6 @@
+package com.yan;
+
+import com.yan.rpcframeworkcommon.extension.ExtensionLoader;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
 import com.yan.rpcframeworkstudy.network.transport.socket.SocketRpcClient;
@@ -14,7 +17,8 @@ import java.util.UUID;
 public class SocketClientMain {
     public static void main(String[] args) {
 
-        final IRpcRequestTransport rpcRequestTransport = new SocketRpcClient();
+        final IRpcRequestTransport rpcRequestTransport = ExtensionLoader
+                .getExtensionLoader(IRpcRequestTransport.class).getExtension("socket");
 //        final RpcRequest rpcRequest = new RpcRequest();
 
         for (int i = 0; i < 100; i++) {

@@ -1,7 +1,6 @@
-package hello;
+package com.yan.hello;
 
-import com.yan.hello.Hello;
-import com.yan.hello.IHelloService;
+import com.yan.rpcframeworkstudy.annotation.RpcService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,10 +12,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since JDK 1.8.0
  */
 @Slf4j
+@RpcService(group = "test1", version = "version1")
 public class HelloServiceImpl1 implements IHelloService {
 
     /**
-     * @param hello hello message
+     * @param hello com.yan.hello message
      * @return result
      */
     @Override
@@ -24,7 +24,7 @@ public class HelloServiceImpl1 implements IHelloService {
         if (log.isInfoEnabled()) {
             log.info("HelloServiceImpl1 received: [{}]", hello);
         }
-        final String result = "hello description is " + hello.getDescription();
+        final String result = "com.yan.hello description is " + hello.getDescription();
         if (log.isInfoEnabled()) {
             log.info("HelloServiceImpl1 return: [{}]", result);
         }

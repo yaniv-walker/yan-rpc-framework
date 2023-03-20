@@ -1,5 +1,6 @@
 package com.yan.rpcframeworkstudy.network.transport;
 
+import com.yan.rpcframeworkcommon.extension.SPI;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 
 /**
@@ -10,6 +11,7 @@ import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
  * @date 2023/2/20 0020
  * @since JDK 1.8.0
  */
+@SPI
 public interface IRpcRequestTransport {
 
     /**

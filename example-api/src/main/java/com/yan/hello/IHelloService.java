@@ -11,7 +11,7 @@ package com.yan.hello;
 public interface IHelloService {
 
     /**
-     * @param hello hello message
+     * @param hello com.yan.hello message
      * @return result
      */
     String hello(Hello hello);

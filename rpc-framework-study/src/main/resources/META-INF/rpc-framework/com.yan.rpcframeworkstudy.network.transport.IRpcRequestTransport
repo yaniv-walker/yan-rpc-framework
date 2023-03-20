@@ -1,0 +1,2 @@
+netty=com.yan.rpcframeworkstudy.network.transport.netty.client.NettyRpcClient
+socket=com.yan.rpcframeworkstudy.network.transport.socket.SocketRpcClient

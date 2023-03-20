@@ -16,18 +16,15 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_PORT;
 
@@ -38,16 +35,22 @@ import static com.yan.rpcframeworkstudy.network.contants.RpcConstants.SERVER_POR
  * @version 1.0.0 2023-02-23
  * @since JDK 1.8.0
  */
+@Component
 public class NettyRpcServer implements IRpcServer {
 
+    public NettyRpcServer() {
+
+    }
+
     public NettyRpcServer(final List<RpcServiceConfig> rpcServiceConfigs) {
-        // TODO: when server start, register all service we need (could use Spring to scan)
+        // when server start, register all service we need (use Spring to scan)
+
 //        final IServiceProvider serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
-        final IServiceProvider serviceProvider =
-                ExtensionLoader.getExtensionLoader(IServiceProvider.class).getExtension("zk");
-        for (final RpcServiceConfig rpcServiceConfig : rpcServiceConfigs) {
-            serviceProvider.publishService(rpcServiceConfig);
-        }
+//        final IServiceProvider serviceProvider =
+//                ExtensionLoader.getExtensionLoader(IServiceProvider.class).getExtension("zk");
+//        for (final RpcServiceConfig rpcServiceConfig : rpcServiceConfigs) {
+//            serviceProvider.publishService(rpcServiceConfig);
+//        }
     }
 
     /**

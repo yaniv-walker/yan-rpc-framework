@@ -1,3 +1,5 @@
+package com.yan;
+
 import com.yan.rpcframeworkstudy.network.transport.IRpcServer;
 import com.yan.rpcframeworkstudy.network.transport.socket.SocketRpcServer;
 

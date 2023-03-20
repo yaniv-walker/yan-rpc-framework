@@ -18,6 +18,9 @@ import java.lang.annotation.*;
 @Import(RpcCustomScannerRegister.class)
 @Documented
 public @interface RpcScan {
-
+    /**
+     * the basePackage where the scanner will scan custom annotations.
+     * @return base package
+     */
     String[] basePackage();
 }

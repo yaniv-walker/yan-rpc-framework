@@ -1,7 +1,6 @@
 package com.yan.rpcframeworkstudy.network.handler;
 
 import com.yan.rpcframeworkcommon.exception.RpcException;
-import com.yan.rpcframeworkcommon.extension.ExtensionLoader;
 import com.yan.rpcframeworkcommon.factory.SingletonFactory;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.provider.IServiceProvider;
@@ -25,8 +24,8 @@ public class RpcRequestHandler {
     private final IServiceProvider serviceProvider;
 
     public RpcRequestHandler() {
-//        serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
-        serviceProvider = ExtensionLoader.getExtensionLoader(IServiceProvider.class).getExtension("zk");
+        serviceProvider = SingletonFactory.getInstance(ZkServiceProvider.class);
+//        serviceProvider = ExtensionLoader.getExtensionLoader(IServiceProvider.class).getExtension("zk");
     }
 
     /**
