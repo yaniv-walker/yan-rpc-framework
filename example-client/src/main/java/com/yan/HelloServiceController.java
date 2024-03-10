@@ -22,4 +22,5 @@ public class HelloServiceController {
     public String hello(Hello hello) {
         return helloService.hello(hello);
     }
+
 }

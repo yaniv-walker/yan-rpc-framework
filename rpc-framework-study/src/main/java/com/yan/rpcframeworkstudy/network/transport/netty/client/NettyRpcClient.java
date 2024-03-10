@@ -3,13 +3,14 @@ package com.yan.rpcframeworkstudy.network.transport.netty.client;
 import com.yan.rpcframeworkcommon.enums.RpcCodecEnum;
 import com.yan.rpcframeworkcommon.enums.RpcMessageTypeEnum;
 import com.yan.rpcframeworkcommon.factory.SingletonFactory;
-import com.yan.rpcframeworkstudy.network.contants.RpcConstants;
 import com.yan.rpcframeworkstudy.network.dto.RpcMessage;
 import com.yan.rpcframeworkstudy.network.dto.RpcRequest;
 import com.yan.rpcframeworkstudy.network.dto.RpcResponse;
 import com.yan.rpcframeworkstudy.network.transport.IRpcRequestTransport;
 import com.yan.rpcframeworkstudy.network.transport.netty.codec.RpcMessageDecoder;
 import com.yan.rpcframeworkstudy.network.transport.netty.codec.RpcMessageEncoder;
+import com.yan.rpcframeworkstudy.register.IServiceRegisterAndDiscover;
+import com.yan.rpcframeworkstudy.register.zk.ZkServiceRegisterAndDiscoverImpl;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -19,10 +20,8 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -43,6 +42,10 @@ public class NettyRpcClient implements IRpcRequestTransport {
 
     private final UnprocessedRequests unprocessedRequests;
 
+    private final IServiceRegisterAndDiscover serviceRegisterAndDiscover;
+
+    private final ChannelManager channelManager;
+
     public NettyRpcClient() {
         // initialize resources such as eventLoopGroup, bootStrap, etc.
         final EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
@@ -61,6 +64,8 @@ public class NettyRpcClient implements IRpcRequestTransport {
                     }
                 });
         this.unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
+        this.serviceRegisterAndDiscover = SingletonFactory.getInstance(ZkServiceRegisterAndDiscoverImpl.class);
+        this.channelManager = SingletonFactory.getInstance(ChannelManager.class);
     }
 
     /**
@@ -79,10 +84,16 @@ public class NettyRpcClient implements IRpcRequestTransport {
 
         // 4. get server address and build a channel between the client and the server.
         try {
-            // TODO: discover the server ip and port
-            final SocketAddress inetSocketAddress =
-                    new InetSocketAddress(RpcConstants.SERVER_IP_ADDRESS, RpcConstants.SERVER_PORT);
-            final Channel channel = this.bootstrap.connect(inetSocketAddress).sync().channel();
+//            final SocketAddress inetSocketAddress =
+//                    new InetSocketAddress(RpcConstants.SERVER_IP_ADDRESS, RpcConstants.SERVER_PORT);
+            // discover the server ip and port
+            final SocketAddress inetSocketAddress = this.serviceRegisterAndDiscover.discover(rpcRequest);
+
+            Channel channel = this.channelManager.get(inetSocketAddress);
+            if (null == channel) {
+                channel = this.bootstrap.connect(inetSocketAddress).sync().channel();
+                this.channelManager.put(inetSocketAddress, channel);
+            }
 
             if (channel.isActive()) {
                 // 5. if the channel is active,

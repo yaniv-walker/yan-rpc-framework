@@ -36,7 +36,7 @@ public class NettyClientMain {
         final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(NettyClientMain.class);
         final HelloServiceController controller = context.getBean(HelloServiceController.class);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100000; i++) {
             final Hello hello = Hello.builder()
                     .message("com.yan.hello " + i)
                     .description("this is " + i + "th talk")
